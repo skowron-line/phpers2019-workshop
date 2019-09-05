@@ -1,0 +1,20 @@
+offers:
+    path: /offers
+    methods: GET
+    controller: JobBoard\Controller\GetOffers:__invoke
+
+offer:
+    path: /offer/{id}
+    methods: GET
+    controller: JobBoard\Controller\GetOffer:__invoke
+
+top_viewed:
+    path: /top-viewed
+    methods: GET
+    controller: JobBoard\Controller\GetTopViewed:__invoke
+
+recently_added:
+    path: /recently-added
+    methods: GET
+    controller: JobBoard\Controller\GetRecentlyAdded:__invoke
+

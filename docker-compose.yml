@@ -1,0 +1,62 @@
+version: '3'
+services:
+    php:
+        build:
+            context: './docker/php'
+            args:
+                UID: '${UID}'
+                SYS_USER: '${SYS_USER}'
+        container_name: 'phpers_php'
+        restart: always
+        env_file:
+            - './.env'
+        volumes:
+            - './:/var/www/html:cached'
+        networks:
+            - 'application'
+    nginx:
+        build: './docker/nginx'
+        container_name: 'phpers_nginx'
+        restart: always
+        env_file:
+            - './.env'
+        volumes:
+            - './public:/var/www/html/public:cached'
+        ports:
+            - "8097:80"
+        command: [nginx-debug, '-g', 'daemon off;']
+        networks:
+            - 'application'
+    mariadb:
+        image: mariadb
+        container_name: 'phpers_mariadb'
+        restart: always
+        volumes:
+            - './docker/schema.sql:/var/schema.sql'
+        env_file:
+            - './.env'
+        environment:
+            MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
+            MYSQL_DATABASE: '${MYSQL_DATABASE}'
+            MYSQL_USER: '${MYSQL_USER}'
+            MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
+        networks:
+            - 'application'
+        ports:
+            - "3306:3306"
+    elk:
+        build: './docker/elasticsearch'
+        container_name: 'phpers_elasticsearch'
+        volumes:
+            - './docker/mysql-connector-java-8.0.17.jar:/var/mysql-connector-java-8.0.17.jar'
+        ports:
+            - "5601:5601"
+            - "9200:9200"
+            - "5044:5044"
+        networks:
+            - 'application'
+
+networks:
+    application:
+        external:
+            name: 'phpers'
