@@ -3,7 +3,7 @@ FROM php:7.2-fpm
 ARG SYS_USER
 ARG UID
 
-RUN git unzip icu-dev bash build-base autoconf; \
+RUN apt-get install -y git unzip icu-dev bash build-base autoconf; \
     docker-php-ext-install intl opcache; \
     pecl install xdebug-stable; \
     docker-php-ext-enable xdebug
