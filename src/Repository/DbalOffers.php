@@ -91,7 +91,8 @@ SQL;
     public function jobsInCities(): array
     {
         $sql =<<<SQL
-SELECT cities.name, COUNT(offers_cities.offer_id) AS offers FROM offers_cities, cities
+SELECT cities.name, COUNT(offers_cities.offer_id) AS offers 
+FROM offers_cities, cities
 WHERE cities.id = offers_cities.city_id
 GROUP BY cities.id
 SQL;

@@ -77,7 +77,7 @@ insert into cities values (2, 'Poznań', 2);
 insert into offers values (1, 'PHP Developer', '2019-01-01', '2019-01-15', '2', '10000', '15000', 0);
 insert into offers values (2, 'Senior developer', '2019-01-15', '2019-01-31', '2', '8000', '12000', 1);
 insert into offers values (3, 'Senior developer', '2019-01-15', '2019-01-31', '2', '8000', '12000', 1);
-insert into offers values (4, 'Frontend developer', '2019-02-15', '2019-02-29', '2', '400', '9000', 1);
+insert into offers values (4, 'Frontend developer', '2019-02-15', '2019-02-21', '2', '400', '9000', 1);
 
 insert into offers_cities values (1, 1);
 insert into offers_cities values (1, 2);
