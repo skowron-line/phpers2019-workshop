@@ -1,0 +1,168 @@
+Wyszukanie frazy
+
+GET offers/_search
+{
+  "_source": "title",
+  "query": {
+    "multi_match": {
+      "query": "php developer",
+      "fields": ["title"]
+    }
+  }
+}
+
+Wyszukanie frazy strikt i pelnoteskstowo
+
+GET offers/_search
+{
+  "_source": "title",
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "multi_match": {
+            "query": "php developer",
+            "fields": ["title"],
+            "operator": "and"
+          }
+        },
+        {
+          "multi_match": {
+            "query": "php developer",
+            "fields": ["title"],
+            "operator": "or"
+          }
+        }
+      ]
+    }
+  }
+}
+
+Ilosc ofert w miescie
+
+GET offers/_search
+{
+  "size": 0,
+  "aggs": {
+    "offers_in_city": {
+      "terms": {
+        "field": "localization.city.name.keyword",
+        "size": 10
+      }
+    }
+  }
+}
+
+Średnia pensja
+
+GET offers/_search
+{
+  "size": 0,
+  "aggs": {
+    "avg_salary": {
+      "avg": {
+        "script": {
+          "lang": "painless",
+          "source": "doc['salary.to'].value - doc['salary.from'].value"
+        }
+      }
+    }
+  }
+}
+
+Srednia zarobkow brutto / netto w firmie
+
+GET offers/_search
+{
+  "size": 0,
+  "aggs": {
+    "offers_in_city": {
+      "terms": {
+        "field": "company.name.keyword",
+        "size": 10
+      },
+      "aggs": {
+        "offer_salary_type": {
+          "terms": {
+            "field": "salary.value.keyword",
+            "size": 10
+          },
+          "aggs": {
+            "avg_salary": {
+              "stats": {
+                "script": {
+          "lang": "painless",
+          "source": "doc['salary.to'].value - doc['salary.from'].value"
+        }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+POST _sql/translate
+{
+  "query": """
+    select title from offers where title like '%php%'
+  """
+}
+
+
+
+
+
+PUT offers
+{
+  "settings": {
+    "analysis": {
+      "filter": {
+        "title_synonyms_array": {
+          "type": "synonym",
+          "synonyms": [
+            "ninja, wymiatacz => senior"
+          ]
+        }
+      },
+      "analyzer": {
+        "title_synonyms": {
+          "tokenizer": "whitespace",
+          "filter": [
+            "title_synonyms_array",
+            "lowercase"
+            ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "title": {
+        "type": "text",
+        "analyzer": "title_synonyms"
+      }
+    }
+  }
+}
+
+
+
+DELETE offers
+
+POST offers/_doc
+{
+  "title": "Senior developer"
+}
+
+GET offers/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "senior",
+      "fields": ["title"]
+    }
+  }
+}
